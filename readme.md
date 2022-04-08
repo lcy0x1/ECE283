@@ -1,0 +1,1 @@
+jupyter nbconvert --to PDF src/hw1/q1.ipynb
