@@ -38,7 +38,7 @@ class GaussianMixture(RandomList[GaussianVariable]):
     def get_random_data(self, size: int, seed: int = 0):
         np.random.seed(seed)
         choice = np.random.random((size,))
-        return np.asarray([self.get_random_entry(val).sample_data() for val in choice])
+        return np.asarray([self.get_random_entry(val).sample_data() for val in choice], np.float)
 
     def get_density(self, data: np.ndarray):
         chance = 0
