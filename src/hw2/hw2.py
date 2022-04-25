@@ -28,6 +28,12 @@ class Net(nn.Module):
         x = torch.sigmoid(x)
         return x
 
+    def initialize(self, func):
+        func(self.fc1.weight)
+        func(self.fc1.bias)
+        func(self.fc2.weight)
+        func(self.fc2.bias)
+
 
 def a_from_eigen_angle(eig_1, eig_2, theta):
     eig_vector = np.transpose(np.array([[math.cos(theta), math.sin(theta)],
@@ -52,12 +58,16 @@ if __name__ == '__main__':
     def gen_sample(data_0, data_1, n):
         return torch.from_numpy(np.concatenate((data_0[0:n, :], data_1[0:n, :])))
 
+
     n_sample = 200
     l2_lambda = 1e-2
     lrate = 1e-5
 
     net = Net(2, 32)
-    optimizer = optim.SGD(net.parameters(), lr=lrate)
+    net.initialize(lambda a: torch.nn.init.uniform_(a, 0, 0))
+    net.initialize(lambda a: torch.nn.init.normal_(a, 0, 1))
+
+    optimizer = optim.Adam(net.parameters()).SGD(net.parameters(), lr=lrate)
     optimizer.zero_grad()
     criterion = nn.CrossEntropyLoss()
     data = gen_sample(sample_0, sample_1, n_sample)
@@ -90,4 +100,3 @@ if __name__ == '__main__':
     plt.plot(list_ac0)
     plt.plot(list_ac1)
     plt.ylim([0, 1])
-
